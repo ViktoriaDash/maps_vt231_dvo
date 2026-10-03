@@ -1,0 +1,92 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+abstract class Користувач {
+  # fullName: String
+  # phone: String
+  # email: String
+  + getContactDetails(): String
+  + updateEmail(newEmail: String): void
+}
+
+class Клієнт {
+  - companyName: String
+  - bonusPoints: double
+  - isWholesale: boolean
+  + approveLayout(): void
+  + trackOrder(): String
+}
+
+class Менеджер {
+  - employeeId: int
+  - department: String
+  - shift: String
+  + registerOrder(): void
+  + applyDiscount(): void
+}
+
+interface Тарифікований {
+  + calculatePrice(isWholesale: boolean): double
+  + getBaseValue(): double
+}
+
+class Замовлення {
+  - orderId: int
+  - currentStatus: String
+  - deadline: Date
+  + calculatePrice(isWholesale: boolean): double
+  + changeStatus(newStatus: String): void
+}
+
+class Правка {
+  - editType: String
+  - addedHours: int
+  - priceMultiplier: double
+  + calculatePrice(isWholesale: boolean): double
+  + getDescription(): String
+}
+
+class Макет {
+  - fileName: String
+  - fileFormat: String
+  - isReadyForPrint: boolean
+  + sendToEmail(email: String): void
+  + performPrepressCheck(): boolean
+}
+
+class Оплата {
+  - paymentId: int
+  - totalAmount: double
+  - paymentMethod: String
+  + processTransaction(): boolean
+  + generateReceipt(): String
+}
+
+class Доставка {
+  - trackingCode: String
+  - deliveryAddress: String
+  - courierService: String
+  + dispatchPackage(): void
+  + updateLocation(): void
+}
+
+' --- Узагальнення (generalization) ---
+Користувач <|-- Клієнт
+Користувач <|-- Менеджер
+
+' --- Реалізація інтерфейсу (realization) ---
+Замовлення ..|> Тарифікований
+Правка ..|> Тарифікований
+
+' --- Асоціації з множинністю (association) ---
+Клієнт "1" -- "0..*" Замовлення : оформлює >
+Менеджер "1" -- "0..*" Замовлення : обробляє >
+Замовлення "1" -- "1" Оплата : оплачується через >
+Замовлення "1" -- "0..1" Доставка : відправляється через >
+
+' --- Агрегація (aggregation) ---
+Замовлення "1" o-- "1..*" Макет : включає >
+
+' --- Композиція (composition) ---
+Макет "1" *-- "0..*" Правка : складається з >
+@enduml

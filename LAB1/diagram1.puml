@@ -1,0 +1,60 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Клієнт (Замовник)" as Client
+actor "Менеджер" as Manager
+actor "Зовнішня CRM-система" as CRM
+actor "Дизайнер (Prepress)" as Designer
+actor "Майстер цеху" as Master
+actor "Диспетчер" as Dispatcher
+actor "Адміністратор" as Admin
+actor "Платіжна система" as PaymentSys
+
+rectangle "Система диспетчеризації друкарні" {
+    usecase "Оформити нове замовлення на друк" as UC1
+    usecase "Оформити термінове замовлення" as UC2
+    usecase "Підтвердити транзакцію оплати" as UC3
+    usecase "Застосувати знижку" as UC4
+    usecase "Сформувати розклад завантаження" as UC5
+    usecase "Виконати додрукарську перевірку (Prepress)" as UC6
+    usecase "Виправити технічні помилки макета" as UC7
+    usecase "Затвердити фінальний макет у друк" as UC8
+    usecase "Зафіксувати фактичне виконання етапу" as UC9
+    usecase "Скасувати замовлення" as UC11
+    usecase "Відстежувати статус замовлення" as UC12
+    usecase "Згенерувати звіт про виробництво" as UC13
+    usecase "Повідомити про поломку або брак" as UC14
+    usecase "Завантажити вихідні файли" as UC15
+    usecase "Керувати правами доступу" as UC16
+    usecase "Керувати довідником обладнання" as UC17
+}
+
+Client --> UC15
+Client --> UC8
+Client --> UC12
+
+Manager --> UC1
+Manager --> UC11
+Manager --> UC12
+
+CRM --> UC1
+
+Designer --> UC6
+
+Master --> UC9
+Master --> UC14
+
+Dispatcher --> UC5
+Dispatcher --> UC13
+
+Admin --> UC16
+Admin --> UC17
+
+UC3 --> PaymentSys
+
+UC2 -|> UC1
+UC1 ..> UC3 : <<include>>
+UC4 ..> UC1 : <<extend>>
+UC7 ..> UC6 : <<extend>>
+@enduml
