@@ -1,0 +1,26 @@
+@startuml
+skinparam defaultFontName sans-serif
+
+component "Веб-клієнт (Next.js)" as Web
+component "API Gateway" as Gateway
+component "Сервіс замовлень" as OrderSvc
+component "Сервіс тарифікації правок" as BillingSvc
+component "Модуль Telegram-сповіщень" as NotifySvc
+database "База даних (PostgreSQL)" as DB
+
+interface "IOrders" as IOrders
+interface "IBilling" as IBilling
+interface "INotify" as INotify
+
+Web ..> Gateway
+Gateway -- IOrders
+IOrders - OrderSvc
+Gateway -- IBilling
+IBilling - BillingSvc
+OrderSvc -- INotify
+INotify - NotifySvc
+
+OrderSvc ..> BillingSvc : <<use>>
+OrderSvc --> DB
+BillingSvc --> DB
+@enduml

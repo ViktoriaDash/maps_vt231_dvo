@@ -1,0 +1,26 @@
+@startuml
+skinparam defaultFontName sans-serif
+
+node "Пристрій користувача" as ClientNode {
+  artifact "frontend-bundle.js" as ClientArtifact
+}
+node "API Gateway / Веб-сервер" as WebNode {
+  artifact "gateway.js" as WebArtifact
+}
+node "Сервер застосунків (Next.js)" as AppNode {
+  artifact "order-service.js" as OrderArtifact
+  artifact "billing-service.js" as BillingArtifact
+  artifact "notification-service.js" as NotifyArtifact
+}
+node "Сервер бази даних" as DbNode {
+  artifact "drukar-db (PostgreSQL)" as DbArtifact
+}
+node "Telegram API (зовнішня система)" as TelegramNode {
+  artifact "bot-webhook-api" as TgArtifact
+}
+
+ClientNode --> WebNode : HTTPS
+WebNode --> AppNode : REST/JSON
+AppNode --> DbNode : TCP/IP (SQL)
+AppNode --> TelegramNode : HTTPS (REST API)
+@enduml
