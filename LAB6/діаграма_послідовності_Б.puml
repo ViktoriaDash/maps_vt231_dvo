@@ -1,0 +1,44 @@
+@startuml
+hide footbox
+
+actor "Клієнт" as U
+participant "Веб-клієнт" as C
+participant "Система" as S
+participant "Замовлення" as O
+participant "Оплата" as P
+participant "Менеджер" as M
+
+U -> C : скасувати(замовлення)
+activate C
+C -> S : скасуватиЗамовлення(id)
+activate S
+S -> O : отриматиСтатус()
+activate O
+O --> S : статус
+deactivate O
+
+alt статус «Нове» або «Очікує оплати»
+  S -> O : changeStatus("Скасовано")
+  activate O
+  O --> S : скасовано
+  deactivate O
+  opt оплата вже проведена
+    S -> P : refund()
+    activate P
+    P --> S : кошти повернено
+    deactivate P
+  end
+  par
+    S ->> M : сповістити(замовлення)
+  else
+    S ->> C : надіслатиПідтвердженняСкасування()
+  end
+  S --> C : скасовано
+  C --> U : показати «Замовлення скасовано»
+else статус «В роботі» або «Друк»
+  S --> C : відмова(причина)
+  C --> U : показати «Скасування неможливе, макет у виробництві»
+end
+deactivate S
+deactivate C
+@enduml
